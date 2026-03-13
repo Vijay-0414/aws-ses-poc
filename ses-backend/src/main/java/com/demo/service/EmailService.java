@@ -1,50 +1,39 @@
 package com.demo.service;
 
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.model.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.ses.SesClient;
-import software.amazon.awssdk.services.ses.model.*;
 
 @Service
 public class EmailService {
 
-    private final SesClient sesClient;
+    @Autowired
+    private AmazonSimpleEmailService sesClient;
 
-    public EmailService() {
-        this.sesClient = SesClient.builder()
-                .region(Region.US_EAST_1)
-                .build();
-    }
+    private final String senderEmail = "vijaylog0414@gmail.com";
 
-    public void sendEmail(String to, String subject, String message) {
+    public String sendEmail(String to, String subject, String message) {
 
-        Destination destination = Destination.builder()
-                .toAddresses(to)
-                .build();
+        try {
 
-        Content subjectContent = Content.builder()
-                .data(subject)
-                .build();
+            SendEmailRequest request = new SendEmailRequest()
+                    .withDestination(new Destination().withToAddresses(to))
+                    .withMessage(new Message()
+                            .withSubject(new Content().withData(subject))
+                            .withBody(new Body()
+                                    .withText(new Content().withData(message))))
+                    .withSource(senderEmail);
 
-        Content bodyContent = Content.builder()
-                .data(message)
-                .build();
+            sesClient.sendEmail(request);
 
-        Body body = Body.builder()
-                .text(bodyContent)
-                .build();
+            return "✅ Email Sent Successfully";
 
-        Message msg = Message.builder()
-                .subject(subjectContent)
-                .body(body)
-                .build();
+        } catch (Exception e) {
 
-        SendEmailRequest request = SendEmailRequest.builder()
-                .source("vijaylog0414@gmail.com")
-                .destination(destination)
-                .message(msg)
-                .build();
+            return "❌ Email not sent. Email may not be verified in SES.";
 
-        sesClient.sendEmail(request);
+        }
     }
 }

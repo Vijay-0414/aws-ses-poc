@@ -42,9 +42,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>software.amazon.awssdk</groupId>
-			<artifactId>ses</artifactId>
-			<version>2.25.3</version>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ses</artifactId>
+			<version>1.12.767</version>
 		</dependency>
 	</dependencies>
 
