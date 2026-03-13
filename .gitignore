@@ -1,0 +1,19 @@
+# React / Node
+node_modules/
+build/
+
+# Java / Maven
+target/
+*.log
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
