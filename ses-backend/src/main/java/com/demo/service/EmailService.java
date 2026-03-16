@@ -17,6 +17,12 @@ public class EmailService {
     @Value("${app.mail.sender}")
     private String senderEmail;
 
+    @Value("${app.mail.sender-name}")
+    private String senderName;
+
+    @Value("${app.mail.reply-to}")
+    private String replyToEmail;
+
     public EmailService(AmazonSimpleEmailService sesClient) {
         this.sesClient = sesClient;
     }
@@ -29,13 +35,14 @@ public class EmailService {
                             .withSubject(new Content().withData(subject))
                             .withBody(new Body()
                                     .withText(new Content().withData(message))))
-                    .withSource(senderEmail);
+                    .withSource(senderName + " <" + senderEmail + ">")
+                    .withReplyToAddresses(replyToEmail);
 
             sesClient.sendEmail(request);
 
-            return "Email sent successfully";
+            return "✅ Email sent successfully";
         } catch (Exception e) {
-            return "Email not sent: " + e.getMessage();
+            return "❌ Email not sent: " + e.getMessage();
         }
     }
 }
